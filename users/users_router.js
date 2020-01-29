@@ -49,12 +49,14 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/login", (req, res) => {
+router.post("/auth/login", (req, res) => {
   let { username, password } = req.body;
 
   Users.findBy({ username })
+
     .first()
     .then(user => {
+      console.log(user);
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = makeToken(user);
         res.status(200).json({
@@ -66,6 +68,8 @@ router.post("/login", (req, res) => {
       }
     })
     .catch(error => {
+      console.log("HERE IS THE ERROR", error);
+
       res.status(500).json(error);
     });
 });
