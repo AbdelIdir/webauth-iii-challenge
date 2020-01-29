@@ -7,14 +7,6 @@ const router = require("express").Router();
 
 const restricted = require("../restricted");
 
-router.get("/", restricted, (req, res) => {
-  Users.find()
-    .then(users => {
-      res.json(users);
-    })
-    .catch(err => res.send(err));
-});
-
 function makeToken(user) {
   // make a "payload" object
   const payload = {
@@ -23,7 +15,7 @@ function makeToken(user) {
   };
   // make an "options" object (exp)
   const options = {
-    expiresIn: "1d"
+    expiresIn: 40
   };
   // use the lib to make the token
   const token = jwt.sign(
@@ -71,6 +63,17 @@ router.post("/auth/login", (req, res) => {
       console.log("HERE IS THE ERROR", error);
 
       res.status(500).json(error);
+    });
+});
+
+router.get("/users", restricted, (req, res) => {
+  Users.find()
+    .then(users => {
+      res.json(users);
+    })
+    .catch(err => {
+      res.send(err);
+      console.log(err);
     });
 });
 
